@@ -17,17 +17,20 @@ io.on('connection', (socket) => {
     console.log('New user connected');
     //non-listener doesn't requires a callback function.If you want to send data
     //provide a second argument.It can be an object as well
-/*     socket.emit('newEmail', {
-        from: "paritoshvit@gmail.com",
-        text: "Hi,What's up?",
-        createdAt: new Date().getTime()
-    }); */
 
-    socket.emit('newMessage', {
+    /*     socket.emit('newEmail', {
+            from: "paritoshvit@gmail.com",
+            text: "Hi,What's up?",
+            createdAt: new Date().getTime()
+        }); */
+
+    //socket.emit emits the object to a single connection.
+    
+    /* socket.emit('newMessage', {
         from: "Paritosh",
         text: "Hi,What's up?",
         createdAt: new Date().getTime()
-    });
+    }); */
 
     /* socket.on('createEmail', (newEmail) => {
         console.log("Create Email", newEmail);
@@ -36,6 +39,13 @@ io.on('connection', (socket) => {
     socket.on('createMessage', (newMessage) => {
         newMessage.createdAt = new Date().getTime();
         console.log("Create Message", newMessage);
+
+        //io.emit will emit the objects to all the connections
+        io.emit('newMessage', {
+            from: "paritoshvit@gmail.com",
+            text: "Hi,What's up?",
+            createdAt: new Date().getTime()
+        });
     });
 
     //listener requires a callback function
