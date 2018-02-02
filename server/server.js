@@ -25,7 +25,7 @@ io.on('connection', (socket) => {
         }); */
 
     //socket.emit emits the object to a single connection.
-    
+
     /* socket.emit('newMessage', {
         from: "Paritosh",
         text: "Hi,What's up?",
@@ -36,16 +36,40 @@ io.on('connection', (socket) => {
         console.log("Create Email", newEmail);
     }); */
 
-    socket.on('createMessage', (newMessage) => {
-        newMessage.createdAt = new Date().getTime();
-        console.log("Create Message", newMessage);
+
+    socket.emit('newMessage', {
+        from: "Admin",
+        text: "Welcome to the chat app",
+        createdAt: new Date().getTime()
+    });
+
+    
+    socket.broadcast.emit('newMessage', {
+        from: "Admin",
+        text: "New User Joined",
+        createdAt: new Date().getTime()
+    });
+
+    socket.on('newMessage', (message) => {
+        message.createdAt = new Date().getTime();
+        console.log("Create Message", message);
 
         //io.emit will emit the objects to all the connections
-        io.emit('newMessage', {
-            from: "paritoshvit@gmail.com",
-            text: "Hi,What's up?",
+
+        /*  io.emit('newMessage', {
+             from: "paritoshvit@gmail.com",
+             text: "Hi,What's up?",
+             createdAt: new Date().getTime()
+         }); */
+
+        //it will emit the message to everyone
+        //except the server who created the socket.
+
+        /* socket.broadcast.emit('newMessage', {
+            from: message.from,
+            text: message.text,
             createdAt: new Date().getTime()
-        });
+        }); */
     });
 
     //listener requires a callback function
