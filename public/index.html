@@ -6,12 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+    <!--Use defer if you dont want to load the jquery until your DOM
+    is not loaded.If not always put the script at the bottom -->
+    <script src="/js/libs/jquery-3.3.1.js" defer></script>
+    <script src="/socket.io/socket.io.js" defer></script>
+    <script src="/js/index.js" defer></script>
 </head>
 
 <body>
     <p>Welcome to the chat app</p>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="/js/index.js"></script>
+    <ol id="messages"></ol>
+    <form id="message-form">
+        <input type="text" placeholder="Message" name="message" />
+        <button>Send</button>
+    </form>
 </body>
 
 </html>

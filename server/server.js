@@ -2,13 +2,15 @@ const path = require('path');
 const express = require('express');
 const socketIO = require('socket.io');
 const http = require('http');
+const {
+    generateMessage
+} = require('./utils/message');
 
 var app = express();
 const publicPath = path.join(__dirname, '../public');
 //to support the express middleware and connection pooling with the viewa
 app.use(express.static(publicPath));
 const port = process.env.PORT || 3000
-
 var server = http.createServer(app);
 //configure the server to use socket io
 var io = socketIO(server);
@@ -37,31 +39,19 @@ io.on('connection', (socket) => {
     }); */
 
 
-    socket.emit('newMessage', {
-        from: "Admin",
-        text: "Welcome to the chat app",
-        createdAt: new Date().getTime()
-    });
+    socket.emit('newMessage', generateMessage("Admin", "Welcome to the chat app"));
 
-    
-    socket.broadcast.emit('newMessage', {
-        from: "Admin",
-        text: "New User Joined",
-        createdAt: new Date().getTime()
-    });
 
-    socket.on('newMessage', (message) => {
+    socket.broadcast.emit('newMessage', generateMessage("Admin", "New User Joined"));
+
+    socket.on('createMessage', (message, callback) => {
         message.createdAt = new Date().getTime();
         console.log("Create Message", message);
 
         //io.emit will emit the objects to all the connections
 
-        /*  io.emit('newMessage', {
-             from: "paritoshvit@gmail.com",
-             text: "Hi,What's up?",
-             createdAt: new Date().getTime()
-         }); */
-
+        io.emit('newMessage', generateMessage(message.from, message.text));
+        callback("This is fantastic");
         //it will emit the message to everyone
         //except the server who created the socket.
 
