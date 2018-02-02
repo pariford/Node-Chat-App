@@ -3,7 +3,8 @@ const express = require('express');
 const socketIO = require('socket.io');
 const http = require('http');
 const {
-    generateMessage
+    generateMessage,
+    generateLocationMessage
 } = require('./utils/message');
 
 var app = express();
@@ -65,6 +66,11 @@ io.on('connection', (socket) => {
     //listener requires a callback function
     socket.on('disconnect', () => {
         console.log("Browser/Client is closed");
+    });
+
+    socket.on('createLocationMessage', (coords) => {
+        console.log(coords);
+        io.emit('newLocationMessage', generateLocationMessage('Admin', coords.latitude, coords.longitude));
     })
 })
 server.listen(port, () => {
