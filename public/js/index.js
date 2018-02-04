@@ -24,8 +24,17 @@ socket.on('disconnect', function () {
 }); */
 
 socket.on('newMessage', function (message) {
-    console.log("New message", message);
+    //this will return the markup inside the message template
     var formattedTime = moment(message.createdAt).format("h:mm a");
+    var template = jQuery("#message-template").html();
+    var html = Mustache.render(template, {
+        text: message.text,
+        from: message.from,
+        createdAt: formattedTime
+    });
+
+    jQuery("#messages").append(html);
+    /*  console.log("New message", message);
     console.log("Formatted time", formattedTime);
     //To list down the items on the web screens
     //to setup jquery object on the following elements and set it to a var
@@ -34,7 +43,7 @@ socket.on('newMessage', function (message) {
     //put the data into the li element obtained from the message var
     li.text(`${message.from} ${formattedTime}: ${message.text}`);
     //perfrom jquery operation on ol, and append it to the list as the last child.
-    jQuery('#messages').append(li);
+    jQuery('#messages').append(li); */
 });
 
 /* socket.emit('createMessage', {
@@ -66,7 +75,14 @@ locationButton.on('click', function () {
 
 socket.on('newLocationMessage', function (message) {
     var formattedTime = moment(message.createdAt).format("h:mm a");
-    var li = jQuery("<li></li>");
+    
+    var template = jQuery("#location-message-template").html();
+    var html = Mustache.render(template, {
+        url: message.url,
+        from: message.from,
+        createdAt: formattedTime
+    });
+    /* var li = jQuery("<li></li>");
     //non dynamic attribute target with blank,to tell the browser to open the 
     //url in the new tab
     var a = jQuery('<a target="_blank">My current location</a>');
@@ -76,8 +92,9 @@ socket.on('newLocationMessage', function (message) {
     li.text(`${message.from} ${formattedTime}`);
     //If one argument it fetches the value.If two arguments it sets the value
     a.attr('href', message.url);
-    li.append(": ",a);
-    jQuery('#messages').append(li);
+    li.append(": ", a); */
+
+    jQuery('#messages').append(html);
 
 })
 

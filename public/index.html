@@ -10,12 +10,35 @@
     is not loaded.If not always put the script at the bottom -->
     <script src="/js/libs/jquery-3.3.1.js" defer></script>
     <script src="/socket.io/socket.io.js" defer></script>
-    <script src="/js/index.js" defer></script>
     <script src="/js/libs/moment.js" defer></script>
+    <script src="/js/libs/mustache.js" defer></script>
+    <script src="/js/index.js" defer></script>
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 
 <body class="chat">
+    <script id="message-template" type="text/template">
+        <li class="message">
+            <div class="message__title">
+                <h4>{{from}}</h4>
+                <span>{{createdAt}}
+            </div>
+            <div class="message__body">
+                <p>{{text}}</p>
+            </div>
+        </li>
+    </script>
+    <script id="location-message-template" type="text/template">
+        <li class="message">
+            <div class="message__title">
+                <h4>{{from}}</h4>
+                <span>{{createdAt}}
+            </div>
+            <div class="message__body">
+                <a href="{{url}}" target="_blank">My Current Location</a>
+            </div>
+        </li>
+    </script>
     <div class="chat__sidebar">
         <h3>People</h3>
         <div id="users"></div>
