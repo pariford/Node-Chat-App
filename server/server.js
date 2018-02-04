@@ -52,7 +52,7 @@ io.on('connection', (socket) => {
         //io.emit will emit the objects to all the connections
 
         io.emit('newMessage', generateMessage(message.from, message.text));
-        callback("This is fantastic");
+        callback();
         //it will emit the message to everyone
         //except the server who created the socket.
 
