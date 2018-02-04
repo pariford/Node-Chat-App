@@ -82,6 +82,9 @@ socket.on('newLocationMessage', function (message) {
         from: message.from,
         createdAt: formattedTime
     });
+    //Below is the old way to do the same thing as above
+    //using JQuery, which is tedious
+    
     /* var li = jQuery("<li></li>");
     //non dynamic attribute target with blank,to tell the browser to open the 
     //url in the new tab
