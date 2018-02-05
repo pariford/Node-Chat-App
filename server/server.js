@@ -2,6 +2,8 @@ const path = require('path');
 const express = require('express');
 const socketIO = require('socket.io');
 const http = require('http');
+const _ = require('lodash');
+
 const {
     Users
 } = require('./utils/users');
@@ -53,12 +55,13 @@ io.on('connection', (socket) => {
         if (!isRealString(params.name) || !isRealString(params.room)) {
             callback("Name and room are required");
         }
+        var roomName = _.toLower(params.room);
 
-        socket.join(params.room);
+        socket.join(roomName);
         users.removeUser(socket.id);
-        users.addUser(socket.id, params.name, params.room);
+        users.addUser(socket.id, params.name, roomName);
 
-        io.to(params.room).emit('updateUserList', users.getUserList(params.room));
+        io.to(roomName).emit('updateUserList', users.getUserList(roomName));
 
         //Move out of the rooms
         //socket.leave("String")
@@ -68,7 +71,7 @@ io.on('connection', (socket) => {
         socket.emit('newMessage', generateMessage("Admin", "Welcome to the chat app"));
 
 
-        socket.broadcast.to(params.room).emit('newMessage', generateMessage("Admin", `${params.name} has joined`));
+        socket.broadcast.to(roomName).emit('newMessage', generateMessage("Admin", `${params.name} has joined`));
 
 
         callback();

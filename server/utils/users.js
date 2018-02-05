@@ -1,3 +1,5 @@
+const _ = require('lodash');
+
 [{
     id: "/12fnjskfhjshf",
     name: "Paritosh",
@@ -17,9 +19,21 @@ class Users {
         var user = {
             id,
             name,
-            room
+            room: _.toLower(room)
         };
-        this.users.push(user);
+        var flag = 0;
+        if (this.users.length > 0) {
+            this.users.forEach((option) => {
+                if (option.name === user.name) {
+                    flag = flag + 1;
+                }
+            })
+            if (flag === 0) {
+                this.users.push(user);
+            }
+        } else {
+            this.users.push(user);
+        }
         return user;
     }
     removeUser(id) {
@@ -36,7 +50,7 @@ class Users {
         return this.users.filter((user) => user.id === id)[0]
     }
     getUserList(room) {
-        var users = this.users.filter((user) => user.room === room);
+        var users = this.users.filter((user) => _.toLower(user.room) === _.toLower(room));
         var namesArray = users.map((user) => user.name);
 
         return namesArray;
