@@ -1,7 +1,35 @@
 //it will create a web socket connection
 var socket = io();
+
+function scrollToBottom() {
+    //Selectors
+    var messages = jQuery("#messages");
+    var newMessage = messages.children('li:last-child');
+    //Heights
+    var clientHeight = messages.prop('clientHeight');
+    var scrollHeight = messages.prop('scrollHeight');
+    var scrollTop = messages.prop('scrollTop');
+    var newMessageHeight = newMessage.innerHeight();
+    var lastMessageHeight = newMessage.prev().innerHeight();
+
+    if (clientHeight + scrollTop + newMessageHeight + lastMessageHeight >= scrollHeight) {
+        //jQuery event
+        messages.scrollTop(scrollHeight);
+    }
+
+}
 socket.on('connect', function () {
     console.log("Connected to server");
+
+    var params = jQuery.deparam(window.location.search);
+    socket.emit('join', params, function (err) {
+        if (err) {
+            alert(err);
+            window.location.href = "/";
+        } else {
+            console.log("No error");
+        }
+    });
 
     /*     socket.emit('createEmail', {
             to: "shivanics.vit@gmail.com",
@@ -17,6 +45,15 @@ socket.on('connect', function () {
 socket.on('disconnect', function () {
     console.log("Diconnected from the server")
 });
+
+socket.on('updateUserList', function (users) {
+    console.log("Users List", users);
+    var ol = jQuery("<ol></ol>");
+    users.forEach(function (user) {
+        ol.append(jQuery("<li></li>").text(user));
+    });
+    jQuery("#users").html(ol);
+})
 
 //the arguments here takes the object passed by the emit function
 /* socket.on('newEmail', function (email) {
@@ -44,6 +81,7 @@ socket.on('newMessage', function (message) {
     li.text(`${message.from} ${formattedTime}: ${message.text}`);
     //perfrom jquery operation on ol, and append it to the list as the last child.
     jQuery('#messages').append(li); */
+    scrollToBottom();
 });
 
 /* socket.emit('createMessage', {
@@ -75,7 +113,7 @@ locationButton.on('click', function () {
 
 socket.on('newLocationMessage', function (message) {
     var formattedTime = moment(message.createdAt).format("h:mm a");
-    
+
     var template = jQuery("#location-message-template").html();
     var html = Mustache.render(template, {
         url: message.url,
@@ -84,7 +122,7 @@ socket.on('newLocationMessage', function (message) {
     });
     //Below is the old way to do the same thing as above
     //using JQuery, which is tedious
-    
+
     /* var li = jQuery("<li></li>");
     //non dynamic attribute target with blank,to tell the browser to open the 
     //url in the new tab
@@ -98,7 +136,7 @@ socket.on('newLocationMessage', function (message) {
     li.append(": ", a); */
 
     jQuery('#messages').append(html);
-
+    scrollToBottom();
 })
 
 $('#message-form').on('submit', function (e) {
