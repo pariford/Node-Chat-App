@@ -36,6 +36,11 @@ class Users {
         }
         return user;
     }
+    isUnique(room, name) {
+        let roomUsersList = this.getUserList(room);
+        let filteredUsers = roomUsersList.filter((user) => user === name);
+        return filteredUsers.length ? false : true;
+    }
     removeUser(id) {
         //return the user to be removed
         var user = this.getUser(id);
@@ -55,6 +60,27 @@ class Users {
 
         return namesArray;
     }
+    getRoomsList() {
+        let rooms = {};
+        let roomsArray = [];
+
+        this.users.map((user) => {
+            if (rooms[user.room]) {
+                rooms[user.room]++;
+            } else {
+                rooms[user.room] = 1;
+            }
+        });
+
+        Object.keys(rooms).forEach((key) => {
+            roomsArray.push({
+                room: key,
+                users: rooms[key]
+            });
+        });
+        console.log(roomsArray);
+        return roomsArray;
+    };
 }
 
 

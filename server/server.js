@@ -22,12 +22,16 @@ var app = express();
 const publicPath = path.join(__dirname, '../public');
 //to support the express middleware and connection pooling with the viewa
 app.use(express.static(publicPath));
+var users = new Users();
+
 const port = process.env.PORT || 3000
 var server = http.createServer(app);
 //configure the server to use socket io
 var io = socketIO(server);
-
-var users = new Users();
+app.get('/rooms', (req, res) => {
+    console.log("Inside rooms route");
+    res.status(200).send(users.getRoomsList())
+});
 //it will register an event listener for any new connection
 io.on('connection', (socket) => {
     console.log('New user connected');
@@ -55,6 +59,16 @@ io.on('connection', (socket) => {
         if (!isRealString(params.name) || !isRealString(params.room)) {
             callback("Name and room are required");
         }
+
+        if (params.activeRoom && !isRealString(params.room)) {
+            params.room = params.activeRoom;
+        }
+
+        if (!users.isUnique(params.room, params.name)) {
+            callback("User already exists in the same room");
+        }
+
+
         var roomName = _.toLower(params.room);
 
         socket.join(roomName);
